@@ -1,3 +1,11 @@
+# FORK
+
+业务需要支持IE8，估略做些修改。
+
+build出来的umd版本可直接通过引入`es5-shim`以及`es5-sham`支持`ie8`，若删除最后的`Object.defineProperty`则可以省去`es5-sham`
+
+---
+
 <img src="./logo/rematch-logo.svg" height='250' width='250' alt="Rematch Logo">
 
 <p>
