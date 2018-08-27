@@ -1,12 +1,19 @@
-import { mkdirSync, writeFileSync } from 'fs'
-import { join } from 'path'
+import {
+	mkdirSync,
+	writeFileSync
+} from 'fs'
+import {
+	join
+} from 'path'
 import replace from 'rollup-plugin-replace'
 import uglify from 'rollup-plugin-uglify'
 import commonJs from 'rollup-plugin-commonjs'
 import typescript from 'rollup-plugin-typescript2'
 import resolve from 'rollup-plugin-node-resolve'
 
-import { minify } from 'uglify-es'
+import {
+	minify
+} from 'uglify-es'
 // experimental minifier for ES modules
 // https://github.com/TrySound/rollup-plugin-uglify#warning
 
@@ -15,8 +22,11 @@ const pkg = require('./package.json')
 // minified production builds
 const production = {
 	input: 'lib/index.js',
-	output: [
-		{
+	external: ['redux'],
+	globals: {
+		'redux': 'Redux'
+	},
+	output: [{
 			file: `${pkg.main}/rematch.min.js`,
 			format: 'cjs',
 			exports: 'named',
@@ -35,8 +45,7 @@ const production = {
 			browser: true,
 		}),
 		commonJs(),
-		uglify(
-			{
+		uglify({
 				compress: {
 					pure_getters: true,
 					unsafe: true,
@@ -44,10 +53,12 @@ const production = {
 				output: {
 					comments: false,
 					semicolons: false,
+					beautify: true,
 				},
 				mangle: {
 					reserved: ['payload', 'type', 'meta'],
 				},
+				ie8: true
 			},
 			minify
 		),
@@ -57,16 +68,28 @@ const production = {
 // full source development builds
 const development = {
 	input: 'lib/index.js',
-	output: [
-		{
+	external: ['redux'],
+	globals: {
+		'redux': 'Redux'
+	},
+	output: [{
 			name: 'Rematch',
 			file: pkg.browser,
 			format: 'umd',
 			exports: 'named',
 			sourcemap: true,
 		}, // Universal Modules
-		{ file: `${pkg.main}/rematch.js`, format: 'cjs', exports: 'named' }, // CommonJS Modules
-		{ file: pkg.module, format: 'es', exports: 'named', sourcemap: true }, // ES Modules
+		{
+			file: `${pkg.main}/rematch.js`,
+			format: 'cjs',
+			exports: 'named'
+		}, // CommonJS Modules
+		{
+			file: pkg.module,
+			format: 'es',
+			exports: 'named',
+			sourcemap: true
+		}, // ES Modules
 	],
 	plugins: [
 		replace({
@@ -80,6 +103,23 @@ const development = {
 			browser: true,
 		}),
 		commonJs(),
+		uglify({
+			compress: {
+				pure_getters: true,
+				unsafe: true,
+			},
+			output: {
+				comments: false,
+				semicolons: false,
+				beautify: true,
+			},
+			mangle: {
+				reserved: ['payload', 'type', 'meta'],
+			},
+			ie8: true
+		},
+		minify
+	),
 	],
 }
 

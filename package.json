@@ -35,7 +35,7 @@
     "clean:dist": "rimraf dist",
     "clean:build": "rimraf build",
     "clean": "npm run clean:dist & npm run clean:build",
-    "build": "npm run clean && rollup -c",
+    "build": "tsc -outDir lib -p . &&  npm run clean && rollup -c",
     "build:all": "bash ./scripts/build.sh",
     "dev": "tsc --watch src",
     "postinstall": " node ./scripts/post_install.js",
